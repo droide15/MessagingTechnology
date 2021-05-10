@@ -1,0 +1,28 @@
+@startuml
+!include C:\c4lib\C4_Container.puml
+
+LAYOUT_WITH_LEGEND()
+
+Person(empleado, "Empleado", "Empleado de la planta")
+Person(gerente, "Empleado administrativo", "Empleado de la planta con cargo administrativo")
+Person(admin, "Administrador", "Administrador del sistema Messenger")
+System_Boundary(messenger, "Messenger") {
+    Container(pagina, "<$web>\nPagina web", "Blazor", "Interfaz visual para enviar notificaciones y administrar suscripciones")
+    Container(apis, "<$server>\nServidor", "REST", "Servidor utilizado para publicar alertas y notificaciones")
+    ContainerDb(bdatos, "<$database>\nBase de datos", "SQL", "Base de datos de topicos y suscripciones")
+}
+System(sistema, "<$work>\nSMT", "Sistema SMT de produccion")
+System_Ext(grupos, "<$group>\nGrupos de Telegram", "Grupos de mensajeria movil para diferentes topicos")
+
+Rel(gerente, pagina, "Genera notificacion", "Web")
+Rel(sistema, apis, "Genera alerta", "HTTP")
+Rel(pagina, apis, "Hace peticion web", "HTTP")
+Rel(admin, pagina, "Administra sistema", "Web")
+Rel(admin, grupos, "Administra grupos")
+Rel(apis, bdatos, "Administra y consulta topicos", "SQL")
+Rel(grupos, empleado, "Muestra mensaje")
+Rel(apis, grupos, "Publica mensajes", "HTTPS")
+
+Lay_R(sistema, pagina)
+Lay_R(grupos, pagina)
+@enduml

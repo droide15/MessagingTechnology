@@ -1,0 +1,30 @@
+@startuml
+!include C:\c4lib\C4_Container.puml
+
+LAYOUT_WITH_LEGEND()
+
+Person(empleado, "Empleado", "Empleado de la planta")
+Person(gerente, "Empleado administrativo", "Empleado de la planta con cargo administrativo")
+Person(admin, "Administrador", "Administrador del sistema Messenger")
+System_Boundary(messenger, "Messenger") {
+    Container(cliente, "<$android>\nSuscriptor", "Android", "Cliente suscrito a un topico")
+    Container(pagina, "<$web>\nPagina web", "Blazor", "Interfaz visual para enviar notificaciones y administrar suscripciones")
+    Container(apis, "<$server>\nServidor", "REST", "Servidor utilizado para publicar alertas y notificaciones")
+    ContainerDb(bdatos, "<$database>\nBase de datos", "SQL", "Base de datos de topicos y suscripciones")
+}
+System(sistema, "<$work>\nSMT", "Sistema SMT de produccion")
+System_Ext(servicio, "<$cloud>\nServicio de Firebase", "Servicio de mensajes de Firebase")
+
+Rel(gerente, pagina, "Genera notificacion", "Web")
+Rel(sistema, apis, "Genera alerta", "HTTP")
+Rel(pagina, apis, "Hace peticion web", "HTTP")
+Rel(admin, pagina, "Administra sistema", "Web")
+Rel(apis, bdatos, "Administra y consulta topicos", "SQL")
+Rel(cliente, servicio, "Consulta suscripciones", "HTTPS")
+Rel(servicio, cliente, "Envia mensaje", "FSM")
+Rel(apis, servicio, "Administra suscripciones y publica mensajes", "HTTPS, FSM")
+Rel(cliente, empleado, "Muestra mensaje", "Push")
+
+Lay_D(empleado, messenger)
+Lay_D(empleado, servicio)
+@enduml

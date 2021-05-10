@@ -1,0 +1,23 @@
+@startuml
+!include C:\c4lib\C4_Context.puml
+
+LAYOUT_WITH_LEGEND()
+
+Enterprise_Boundary(foxconn, "Foxconn Baja California") {
+    Person(empleado, "Empleado", "Empleado de la planta")
+    Person(gerente, "Empleado administrativo", "Empleado de la planta con cargo administrativo")
+    Person(admin, "Administrador", "Administrador del sistema Messenger")
+    System(messenger, "<$message>\nMessenger", "Sistema de alertas y notificaciones")
+    System(sistema, "<$work>\nSMT", "Sistema SMT de produccion")
+}
+System_Ext(grupos, "<$group>\nGrupos de Telegram", "Grupos de mensajeria movil para diferentes topicos")
+
+Rel(gerente, messenger, "Genera notificacion")
+Rel(admin, messenger, "Administra sistema")
+Rel(admin, grupos, "Administra grupos")
+Rel(sistema, messenger, "Genera alerta")
+Rel(messenger, grupos, "Publica mensaje")
+Rel(grupos, empleado, "Muestra mensaje")
+
+Lay_D(messenger, grupos)
+@enduml
